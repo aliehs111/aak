@@ -1,0 +1,38 @@
+/* ─────────────────────────────────────────────
+   1) Tailwind base and utilities
+───────────────────────────────────────────── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────
+   2) CSS Variables for your color scheme
+───────────────────────────────────────────── */
+:root {
+  --color-primary:  #ebebd8; /* zinc-50 */
+  --color-secondary: #27272A; /* zinc-900 */
+  --color-accent:  #b49102; /* amber-400 */
+}
+
+/* ─────────────────────────────────────────────
+   3) Global element styles (optional)
+───────────────────────────────────────────── */
+body {
+  background-color: var(--color-primary);
+  color:            var(--color-secondary);
+  font-family:      Inter, system-ui, sans-serif;
+}
+
+a {
+  color:            var(--color-secondary);
+}
+a:hover {
+  opacity: 0.8;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color:       var(--color-accent);
+}
+
+
