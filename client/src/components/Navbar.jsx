@@ -4,7 +4,7 @@ import logo512 from '../assets/logo512.png';
 
 export default function Navbar() {
   return (
-    <nav className="flex items-center justify-between p-4 bg-accent border-b border-gray-200">
+    <nav className="flex items-center justify-between p-4 pb-4 bg-accent">
       <NavLink to="/" className="flex items-center">
         <img
           src={logo512}
@@ -16,7 +16,7 @@ export default function Navbar() {
       <ul className="flex space-x-6 text-sm">
         <li>
           <NavLink
-            to="/inspiration"
+            to="/projects"
             className={({ isActive }) => (isActive ? "text-primary" : "")}
           >
             Inspiration
