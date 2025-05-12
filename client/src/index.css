@@ -9,9 +9,9 @@
    2) CSS Variables for your color scheme
 ───────────────────────────────────────────── */
 :root {
-  --color-primary:  #ebebd8; /* zinc-50 */
+  --color-primary:  #d9dfe0; /* zinc-50 */
   --color-secondary: #27272A; /* zinc-900 */
-  --color-accent:  #8a7d48; /* amber-400 */
+  --color-accent:  #8e8150; /* amber-400 */
 }
 
 /* ─────────────────────────────────────────────
@@ -33,6 +33,10 @@ a:hover {
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   color:       var(--color-accent);
+}
+
+button {
+  color: gray-900;
 }
 
 

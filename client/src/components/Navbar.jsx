@@ -2,6 +2,7 @@
 import { NavLink } from "react-router-dom";
 import logo512 from '../assets/logo512.png';
 
+
 export default function Navbar() {
   return (
     <nav className="flex items-center justify-between p-4 pb-4 bg-accent">
@@ -9,12 +10,20 @@ export default function Navbar() {
         <img
           src={logo512}
           alt="ArchitectName logo"
-          className="h-28 w-28 mr-3 object-contain"
+          className="h-20 w-20 mr-3 object-contain"
         />
       
       </NavLink>
       <ul className="flex space-x-6 text-sm">
         <li>
+        <NavLink
+            to="/about"
+            className={({ isActive }) => (isActive ? "text-primary" : "")}
+          >
+            About
+          </NavLink>
+          </li>
+          <li>
           <NavLink
             to="/projects"
             className={({ isActive }) => (isActive ? "text-primary" : "")}
@@ -27,7 +36,7 @@ export default function Navbar() {
             to="/contact"
             className={({ isActive }) => (isActive ? "text-primary" : "")}
           >
-            Contact Me
+            Contact
           </NavLink>
         </li>
       </ul>
