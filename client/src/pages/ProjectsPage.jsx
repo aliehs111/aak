@@ -1,72 +1,55 @@
 // client/src/pages/ProjectsPage.jsx
 import { useEffect, useState } from "react";
+import axios from "axios";
 import ProjectCard from "../components/ProjectCard";
 
-// import your test images (with extensions!)
-import spideyhouse from "../assets/spideyhouse.jpeg";
-import bookstore   from "../assets/bookstore.jpeg";
-import artgallery  from "../assets/artgallery.jpeg";
-import sophie      from "../assets/sophie.jpeg";
-import rink1       from "../assets/rink1.jpeg";
-
-const MOCK_PROJECTS = [
-  {
-    id:         1,
-    title:      "Custom Spidey House",
-    description:"A house for Spiderman Enthusiasts.",
-    imageUrl:   spideyhouse,
-  },
-  {
-    id:         2,
-    title:      "Children's Bookstore",
-    description:"Modern bookstore for Children.",
-    imageUrl:   bookstore,
-  },
-  {
-    id:         3,
-    title:      "Art Gallery",
-    description:"Redesign of Art Gallery",
-    imageUrl:   artgallery,
-  },
-  {
-    id:         4,
-    title:      "Dog House",
-    description:"Modern Luxury for Modern Dogs",
-    imageUrl:   sophie,
-  },
-  {
-    id:         5,
-    title:      "Ice Rink",
-    description:"Converted a backyard into a professional ice rink",
-    imageUrl:   rink1,
-  },
-];
-
-export default function ProjectsPage() {
+export default function ProjectsPage({ auth }) {
   const [projects, setProjects] = useState([]);
+  const [error, setError]       = useState(null);
 
   useEffect(() => {
-    // seed with mock data for now
-    setProjects(MOCK_PROJECTS);
+    // Fetch from your FastAPI backend
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/projects`, {
+        // if your endpoint is public you can omit auth here
+        auth, 
+      })
+      .then((res) => {
+        setProjects(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to load projects:", err);
+        setError("Could not load projects");
+      });
+  }, [auth]);
 
-    // later, swap in your real API call:
-    // axios
-    //   .get(`${import.meta.env.VITE_API_URL}/projects`)
-    //   .then(res => setProjects(res.data))
-    //   .catch(console.error);
-  }, []);
+  if (error) {
+    return <div className="p-8 text-red-600">{error}</div>;
+  }
+
+  if (!projects.length) {
+    return <div className="p-8">No projects yet.</div>;
+  }
 
   return (
     <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {projects.map((p) => (
-        <ProjectCard
-          key={p.id}
-          title={p.title}
-          description={p.description}
-          imageUrl={p.imageUrl}    // matches the prop in ProjectCard
-        />
-      ))}
+      {projects.map((p) => {
+        // if your API returns images array with s3_key:
+        const imageUrl = p.images?.[0]?.s3_key
+          ? `${import.meta.env.VITE_API_URL}/uploads/${p.images[0].s3_key}`
+          : null;
+
+        return (
+          <ProjectCard
+            key={p.id}
+            title={p.title}
+            description={p.description}
+            imageUrl={imageUrl}
+          />
+        );
+      })}
     </div>
   );
 }
+
 

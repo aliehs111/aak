@@ -1,4 +1,6 @@
 import React from "react";
+import { Cog6ToothIcon } from "@heroicons/react/24/outline";
+
 
 const navigation = [
   {
@@ -64,7 +66,7 @@ const navigation = [
   },
 ];
 
-export default function Footer() {
+export default function Footer({ onAdminClick }) {
   return (
     <footer className="bg-gray-900">
       <div className="mx-auto max-w-7xl px-6 py-8 md:flex md:items-center md:justify-between lg:px-8">
@@ -80,6 +82,15 @@ export default function Footer() {
               <item.icon aria-hidden="true" className="h-6 w-6" />
             </a>
           ))}
+          {/* tiny gear icon */}
+          <button
+            onClick={onAdminClick}
+            className="text-gray-400 hover:text-gray-300 ml-4"
+            style={{ opacity: 0.2 }}
+            aria-label="Admin login"
+          >
+            <Cog6ToothIcon className="h-6 w-6" aria-hidden="true" />
+          </button>
         </div>
         <p className="mt-8 text-center text-sm text-gray-400 md:order-1 md:mt-0">
           &copy; {new Date().getFullYear()} Aaron Kirchhoff, Architect

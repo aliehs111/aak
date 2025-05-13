@@ -12,6 +12,7 @@ export default function Navbar() {
           alt="ArchitectName logo"
           className="h-20 w-20 mr-3 object-contain"
         />
+        <p className="text-3xl font-semibold text-secondary">Aaron Kirchhoff</p>
       
       </NavLink>
       <ul className="flex space-x-6 text-sm">

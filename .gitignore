@@ -1,8 +1,22 @@
-# Ignore any .env files (server/.env, client/.env.local, etc.)
-*.env*
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
 
-# Ignore all node_modules folders
-node_modules/
+# Environment files
+.env
 
-# Ignore Python virtual environments
+# Virtual environments
 .venv/
+env/
+venv/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Node (for your client folder)
+client/node_modules/
+
+# Build outputs
+client/dist/
