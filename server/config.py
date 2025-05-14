@@ -1,10 +1,11 @@
 # server/config.py
 from dotenv import load_dotenv
+load_dotenv()
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-load_dotenv()
+
 
 # If you haven’t set a DATABASE_URL env var, this will default to a local SQLite file.
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./aak.db")

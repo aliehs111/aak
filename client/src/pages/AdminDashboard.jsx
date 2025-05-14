@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function AdminDashboard({ auth }) {
-  const [projects, setProjects] = useState([]);
-  const [title, setTitle] = useState("");
+  const [projects, setProjects]     = useState([]);
+  const [title, setTitle]           = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState(null);
+  const [file, setFile]             = useState(null);
+  const [status, setStatus]         = useState("");
 
   // load current projects
   useEffect(() => {
@@ -15,41 +16,39 @@ export default function AdminDashboard({ auth }) {
       .catch(console.error);
   }, []);
 
-  // handle file selection
   const onFileChange = e => setFile(e.target.files[0]);
 
-  // create a new project
   const onSubmit = async e => {
     e.preventDefault();
-    let s3_key = "";
+    setStatus("Creating project…");
 
-    if (file) {
-      // 1) upload image to S3 via your FastAPI endpoint
+    try {
+      // build one multipart form with title, description, and optional file
       const form = new FormData();
-      form.append("file", file);
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/upload-image`,
+      form.append("title", title);
+      form.append("description", description);
+      if (file) form.append("file", file);
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/projects`,
         form,
         {
           auth,
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      s3_key = data.s3_key;
-    }
 
-    // 2) create the project record
-    const proj = { title, description, imageUrl: s3_key };
-    const res = await axios.post(
-      `${import.meta.env.VITE_API_URL}/projects`,
-      proj,
-      { auth }
-    );
-    setProjects(prev => [...prev, res.data]);
-    // reset form
-    setTitle("");
-    setDescription("");
-    setFile(null);
+      // append the new project to the list
+      setProjects(prev => [...prev, res.data]);
+      setStatus("Done! 🎉");
+      // reset our form fields
+      setTitle("");
+      setDescription("");
+      setFile(null);
+    } catch (err) {
+      console.error(err);
+      setStatus("Error: " + (err.response?.data?.detail || err.message));
+    }
   };
 
   return (
@@ -66,6 +65,7 @@ export default function AdminDashboard({ auth }) {
             required
           />
         </div>
+
         <div>
           <label className="block font-medium">Description</label>
           <textarea
@@ -74,49 +74,43 @@ export default function AdminDashboard({ auth }) {
             onChange={e => setDescription(e.target.value)}
           />
         </div>
+
         <div>
           <label className="block font-medium">Photo</label>
           <input type="file" accept="image/*" onChange={onFileChange} />
         </div>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-primary text-white rounded"
-        >
+
+        <button type="submit" className="px-4 py-2 bg-primary text-white rounded">
           Create Project
         </button>
+
+        {status && <p className="mt-2 text-gray-700">{status}</p>}
       </form>
 
       <h2 className="text-xl font-semibold">Existing Projects</h2>
       <ul className="space-y-4">
         {projects.map(p => (
-          <li key={p.id} className="border p-4 rounded flex justify-between">
+          <li key={p.id} className="border p-4 rounded flex justify-between items-center">
             <div>
               <strong>{p.title}</strong>
               <p>{p.description}</p>
             </div>
-            <div className="space-x-2">
-              <button
-                className="px-2 py-1 bg-yellow-500 text-white rounded"
-                onClick={() => {/* TODO: edit flow */}}
-              >
-                Edit
-              </button>
-              <button
-                className="px-2 py-1 bg-red-600 text-white rounded"
-                onClick={async () => {
-                  await axios.delete(
-                    `${import.meta.env.VITE_API_URL}/projects/${p.id}`,
-                    { auth }
-                  );
-                  setProjects(prev => prev.filter(x => x.id !== p.id));
-                }}
-              >
-                Delete
-              </button>
-            </div>
+            <button
+              className="px-2 py-1 bg-red-600 text-white rounded"
+              onClick={async () => {
+                await axios.delete(
+                  `${import.meta.env.VITE_API_URL}/projects/${p.id}`,
+                  { auth }
+                );
+                setProjects(prev => prev.filter(x => x.id !== p.id));
+              }}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
     </div>
   );
 }
+
