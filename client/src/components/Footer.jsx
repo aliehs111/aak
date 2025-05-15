@@ -68,7 +68,7 @@ const navigation = [
 
 export default function Footer({ onAdminClick }) {
   return (
-    <footer className="bg-gray-900">
+    <footer className="bg-accent">
       <div className="mx-auto max-w-7xl px-6 py-8 md:flex md:items-center md:justify-between lg:px-8">
         <div className="flex justify-center gap-x-6 md:order-2">
           {navigation.map((item) => (

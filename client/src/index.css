@@ -1,3 +1,11 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
+
+
+
 /* ─────────────────────────────────────────────
    1) Tailwind base and utilities
 ───────────────────────────────────────────── */
@@ -5,13 +13,21 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+:root {
+  --font-modern: 'Inter', sans-serif;
+}
+
+.font-modern { font-family: var(--font-modern); }
+
 /* ─────────────────────────────────────────────
    2) CSS Variables for your color scheme
 ───────────────────────────────────────────── */
 :root {
-  --color-primary:  #eff2ef;
-  --color-secondary: #27272A; 
-  --color-accent:  #5b583c; 
+  --color-primary:  #e0f1f5;
+  --color-secondary: #1F2839; 
+  --color-accent:  #3d3f46; 
 }
 
 /* ─────────────────────────────────────────────
@@ -37,6 +53,79 @@ h1, h2, h3, h4, h5, h6 {
 
 button {
   color: gray-900;
+}
+
+@keyframes shine {
+  0%   { transform: translateX(-50%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
+}
+.shine-overlay {
+  content: "";
+  position: absolute;
+  top: 0; left: -50%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.6) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  transform: skewX(-20deg);
+  animation: shine 2.5s ease-in-out 1 forwards;
+}
+
+/* container around your heading must hide overflow */
+.shiny-text {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+/* create the moving glare */
+.shiny-text::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0)   0%,
+    rgba(255,255,255,0.6) 50%,
+    rgba(255,255,255,0)   100%
+  );
+  transform: skewX(-20deg);
+  /* play once, and keep at last keyframe */
+  animation: shine 2.5s ease-out 1 forwards;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  50% {
+    left: 100%;
+    opacity: 1;
+  }
+  100% {
+    left: 200%;
+    opacity: 0;
+  }
+}
+
+/* in index.css */
+.home-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(236,226,208,0.6) 0%,
+    rgba(245,241,237,0.6) 50%,
+    rgba(236,226,208,0.6) 100%
+  );
+  mix-blend-mode: multiply;
 }
 
 
