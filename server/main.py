@@ -260,13 +260,15 @@ def delete_project(
     project_id: int = Path(..., gt=0),
     db: Session = Depends(get_db),
 ):
+    # look it up
     proj = db.get(models.Project, project_id)
     if not proj:
         raise HTTPException(status_code=404, detail="Project not found")
+
+    # delete + commit
     db.delete(proj)
     db.commit()
-    # 204 No Content implies successful delete with an empty body
-    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
+    # implicit return None → empty 204 response
 
 
 

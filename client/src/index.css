@@ -9,9 +9,9 @@
    2) CSS Variables for your color scheme
 ───────────────────────────────────────────── */
 :root {
-  --color-primary:  #d9dfe0; /* zinc-50 */
-  --color-secondary: #27272A; /* zinc-900 */
-  --color-accent:  #8e8150; /* amber-400 */
+  --color-primary:  #eff2ef;
+  --color-secondary: #27272A; 
+  --color-accent:  #5b583c; 
 }
 
 /* ─────────────────────────────────────────────

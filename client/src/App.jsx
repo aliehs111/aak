@@ -1,6 +1,6 @@
 // client/src/App.jsx
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 import Navbar from "./components/Navbar";
@@ -16,6 +16,16 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate              = useNavigate();
 
+  // on mount, restore admin creds if present
+  useEffect(() => {
+    const stored = localStorage.getItem("aak_admin");
+    if (stored) {
+      const creds = JSON.parse(stored);
+      setAuth(creds);
+      setIsAdmin(true);
+    }
+  }, []);
+
   const handleAdminClick = async () => {
     const username = window.prompt("Admin username:");
     if (!username) return;
@@ -25,7 +35,10 @@ export default function App() {
       await axios.get(`${import.meta.env.VITE_API_URL}/admin`, {
         auth: { username, password },
       });
-      setAuth({ username, password });
+      // persist and set
+      const creds = { username, password };
+      localStorage.setItem("aak_admin", JSON.stringify(creds));
+      setAuth(creds);
       setIsAdmin(true);
       navigate("/admin");
     } catch {
@@ -34,9 +47,10 @@ export default function App() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("aak_admin");
     setAuth(null);
     setIsAdmin(false);
-    navigate("/");      // send them home
+    navigate("/"); // send them home
   };
 
   return (
@@ -63,6 +77,7 @@ export default function App() {
     </div>
   );
 }
+
 
 
 

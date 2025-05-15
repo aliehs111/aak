@@ -96,17 +96,26 @@ export default function AdminDashboard({ auth }) {
               <p>{p.description}</p>
             </div>
             <button
-              className="px-2 py-1 bg-red-600 text-white rounded"
-              onClick={async () => {
-                await axios.delete(
-                  `${import.meta.env.VITE_API_URL}/projects/${p.id}`,
-                  { auth }
-                );
-                setProjects(prev => prev.filter(x => x.id !== p.id));
-              }}
-            >
-              Delete
-            </button>
+  className="px-2 py-1 bg-red-600 text-white rounded"
+  onClick={async () => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/projects/${p.id}`,
+        {
+          auth,               // { username, password }
+          withCredentials: true
+        }
+      );
+      setProjects(prev => prev.filter(x => x.id !== p.id));
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Could not delete project");
+    }
+  }}
+>
+  Delete
+</button>
+
           </li>
         ))}
       </ul>

@@ -13,7 +13,7 @@ export default function About() {
             {/* — Text block on the left — */}
             <div className="lg:pr-8 pt-8">
               <h1 className="text-4xl font-semibold tracking-tight text-accent sm:text-5xl">
-                About Me
+                Meet Aaron Kirchhoff
               </h1>
               <p className="mt-6 max-w-xl text-lg font-medium text-gray-500 sm:text-xl/8">
                 Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem
