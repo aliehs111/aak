@@ -10,6 +10,8 @@ import ProjectsPage from "./pages/ProjectsPage";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import AdminDashboard from "./pages/AdminDashboard";
+import ProjectDetails from "./pages/ProjectDetails";
+import FAQ from "./components/FAQ";
 
 export default function App() {
   const [auth, setAuth]       = useState(null);
@@ -65,6 +67,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/projects" element={<ProjectsPage auth={auth} />} />
+          <Route path= "/projects/:id" element={<ProjectDetails /> } />
+
           <Route path="/contact" element={<Contact />} />
           <Route path="/about"   element={<About />} />
           {isAdmin && (

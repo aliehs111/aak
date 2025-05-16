@@ -25,7 +25,7 @@
    2) CSS Variables for your color scheme
 ───────────────────────────────────────────── */
 :root {
-  --color-primary:  #e0f1f5;
+  --color-primary:  #fbfcf1;
   --color-secondary: #1F2839; 
   --color-accent:  #3d3f46; 
 }
@@ -128,4 +128,9 @@ button {
   mix-blend-mode: multiply;
 }
 
+[class*="animation-delay-"] { animation-fill-mode: both; }
+.animation-delay-\[0ms\]   { animation-delay: 0ms;   }
+.animation-delay-\[100ms\] { animation-delay: 100ms; }
+.animation-delay-\[200ms\] { animation-delay: 200ms; }
+/* …add as many steps as you need… */
 

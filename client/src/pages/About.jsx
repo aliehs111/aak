@@ -1,6 +1,7 @@
 // client/src/pages/About.jsx
 import aaronsnow from "../assets/aaronsnow.jpg";
-
+import FAQ from "../components/FAQ";
+import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 export default function About() {
   return (
    
@@ -41,7 +42,7 @@ export default function About() {
             </div>
           </div>
         </div>
-
+<FAQ />
     
       </div>
  

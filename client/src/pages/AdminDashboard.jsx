@@ -80,7 +80,7 @@ export default function AdminDashboard({ auth }) {
           <input type="file" accept="image/*" onChange={onFileChange} />
         </div>
 
-        <button type="submit" className="px-4 py-2 bg-primary text-white rounded">
+        <button type="submit" className="px-4 py-2 bg-secondary text-white rounded">
           Create Project
         </button>
 
