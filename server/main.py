@@ -9,16 +9,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # 1) Database setup (so your Base/engine use the right URL)
-from server.config import engine, SessionLocal, Base
+from config import engine, SessionLocal, Base
 import models, schemas  # ensure your models are imported so Base.metadata knows about them
 
 # 2) Create tables
 Base.metadata.create_all(bind=engine)
 
 # 3) Create the FastAPI app
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, status, Path, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+import os, secrets, uuid, boto3
+from fastapi import Depends, HTTPException, status, File, UploadFile, Path
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
+import schemas
+from schemas import ProjectRead, ProjectCreate, ProjectUpdate
 
 app = FastAPI(title="aak_API")
 
@@ -31,71 +38,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 5) Mount static uploads folder
+
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
-# 6) Define your dependencies (auth, DB session, S3 client)
-import os, secrets, uuid, boto3
-from fastapi import Depends, HTTPException, status, File, UploadFile, Path
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
-import schemas
-from schemas import ProjectRead, ProjectCreate, ProjectUpdate
-
-# … define get_admin, get_db, s3 client here …
-
-# 7) Define your routes
-@app.get("/", tags=["health"])
-def health():
-    return {"message": "Hello, Architect!"}
-
-# … all your /admin, /upload-image, /projects routes, etc. …
-
-
-# 3) Basic‐Auth for your single admin
-security = HTTPBasic()
-def get_admin(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_user = os.getenv("ADMIN_USERNAME", "")
-    correct_pass = os.getenv("ADMIN_PASSWORD", "")
-    if not (secrets.compare_digest(credentials.username, correct_user)
-            and secrets.compare_digest(credentials.password, correct_pass)):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credentials",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    return credentials.username
-
-# 4) DB session dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-s3_bucket = os.getenv("S3_BUCKET")
-s3 = boto3.client("s3") if s3_bucket else None
-
-from fastapi import FastAPI, Depends, HTTPException, status, Path, UploadFile, File, Form
-from fastapi.responses import JSONResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from sqlalchemy.orm import Session
-import os, secrets, uuid, boto3
-
-from config import engine, SessionLocal, Base
-import models, schemas
 
 # 1) Create tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="aak_API")
 
-# serve ./uploads locally at /uploads
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 
 # CORS (allow your React dev server)
 app.add_middleware(
@@ -131,6 +83,10 @@ def get_db():
 # S3 client if you have S3_BUCKET in your .env
 s3_bucket = os.getenv("S3_BUCKET")
 s3 = boto3.client("s3") if s3_bucket else None
+
+@app.get("/", tags=["health"])
+def health():
+    return {"message": "Hello, Architect!"}
 
 @app.post(
     "/projects",

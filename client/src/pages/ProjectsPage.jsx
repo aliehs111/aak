@@ -8,6 +8,14 @@ const COL_SPANS = [
   "lg:col-span-2", // item 1
   "lg:col-span-2", // item 2
   "lg:col-span-4", // item 3
+  "lg:col-span-4", // item 4
+  "lg:col-span-2", // item 5
+  "lg:col-span-2", // item 6
+  "lg:col-span-4", // item 7
+  "lg:col-span-4", // item 8
+  "lg:col-span-2", // item 9
+  "lg:col-span-2", // item 10
+  "lg:col-span-4", // item 11
   // ...add more if you have more projects
 ];
 

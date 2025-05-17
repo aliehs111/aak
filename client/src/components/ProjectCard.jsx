@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function ProjectCard({ id, title, description, imageUrl }) {
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col">
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden flex">
       <div className="relative w-full aspect-square bg-gray-100">
         {imageUrl && (
           <img
