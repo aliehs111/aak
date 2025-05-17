@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # 1) Database setup (so your Base/engine use the right URL)
-from config import engine, SessionLocal, Base
+from server.config import engine, SessionLocal, Base
 import models, schemas  # ensure your models are imported so Base.metadata knows about them
 
 # 2) Create tables
