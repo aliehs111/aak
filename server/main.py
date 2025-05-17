@@ -39,7 +39,8 @@ app.add_middleware(
 )
 
 
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+app.mount("/", StaticFiles(directory="client/dist", html=True), name="static")
+
 
 
 # 1) Create tables
