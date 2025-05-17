@@ -1,12 +1,16 @@
 # server/app/main.py
 
+# ─── Standard library ─────────────────────────────────────────────────────────
+import os
+from pathlib import Path
+
 # 0) Load your .env immediately:
 from dotenv import load_dotenv
 load_dotenv()
 
 # 1) Database setup (so your Base/engine use the right URL)
 from config import engine, SessionLocal, Base
-import models  # ensure your models are imported so Base.metadata knows about them
+import models, schemas  # ensure your models are imported so Base.metadata knows about them
 
 # 2) Create tables
 Base.metadata.create_all(bind=engine)
@@ -270,5 +274,13 @@ def delete_project(
     db.commit()
     # implicit return None → empty 204 response
 
-
+if "DYNO" in os.environ:
+    DIST = Path(__file__).resolve().parent.parent / "client" / "dist"
+    if DIST.exists():
+        app.mount("/", StaticFiles(directory=str(DIST), html=True), name="static")
+        print(f"🚀 Serving SPA from {DIST}")
+    else:
+        print(f"⚠️ No build found at {DIST}")
+else:
+    print("⚠️ Dev mode: skipping SPA mount")
 
