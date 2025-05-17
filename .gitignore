@@ -1,3 +1,7 @@
+# allow the built frontend
+!client/dist/
+!client/dist/**
+
 # Python bytecode
 __pycache__/
 *.py[cod]
@@ -18,5 +22,4 @@ Thumbs.db
 # Node (for your client folder)
 client/node_modules/
 
-# Build outputs
-client/dist/
+
