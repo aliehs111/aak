@@ -23,15 +23,16 @@ export default function ProjectsPage({ auth }) {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
+    const base = import.meta.env.VITE_API_URL || "";
     axios
-      .get(`${import.meta.env.VITE_API_URL}/projects`, { auth })
+      .get(`${base}/projects`)
       .then((res) => {
         const list = res.data.map((p) => {
           const img = p.images[0];
           let url = null;
           if (img) {
             if (img.s3_key.startsWith("uploads/")) {
-              url = `${import.meta.env.VITE_API_URL}/${img.s3_key}`;
+              url = `${base}/${img.s3_key}`;
             } else if (
               import.meta.env.VITE_S3_BUCKET &&
               import.meta.env.VITE_AWS_REGION
@@ -49,7 +50,8 @@ export default function ProjectsPage({ auth }) {
         setProjects(list);
       })
       .catch(console.error);
-  }, [auth]);
+  }, []);
+  
 
   return (
     <div className="bg-secondary py-12 sm:py-24">

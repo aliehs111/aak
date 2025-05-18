@@ -1,12 +1,12 @@
 # server/app/main.py
 
-# ─── Standard library ─────────────────────────────────────────────────────────
-import os
-from pathlib import Path
-
 # 0) Load your .env immediately:
 from dotenv import load_dotenv
 load_dotenv()
+
+import os, boto3, secrets, uuid
+
+from pathlib import Path as PathLib    # ← alias to avoid collision
 
 # 1) Database setup (so your Base/engine use the right URL)
 from config import engine, SessionLocal, Base
@@ -16,18 +16,29 @@ import models, schemas  # ensure your models are imported so Base.metadata knows
 Base.metadata.create_all(bind=engine)
 
 # 3) Create the FastAPI app
-from fastapi import FastAPI, Depends, HTTPException, status, Path, UploadFile, File, Form
+from fastapi import FastAPI, Depends, HTTPException, status, Path, UploadFile, File, Form, Path
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-import os, secrets, uuid, boto3
-from fastapi import Depends, HTTPException, status, File, UploadFile, Path
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+
+
 from sqlalchemy.orm import Session
+
 import schemas
 from schemas import ProjectRead, ProjectCreate, ProjectUpdate
 
 app = FastAPI(title="aak_API")
+
+# React build mount
+# where the React build lives
+DIST = PathLib(__file__).resolve().parent.parent / "client" / "dist"
+
+# app.mount("/", StaticFiles(directory=str(dist), html=True), name="static")
+
+# # Uploads mount
+# uploads_path = PathLib(__file__).parent / "uploads"
+# app.mount("/uploads", StaticFiles(directory=str(uploads_path)), name="uploads")
 
 # 4) Add CORS middleware
 app.add_middleware(
@@ -39,25 +50,7 @@ app.add_middleware(
 )
 
 
-app.mount("/", StaticFiles(directory="client/dist", html=True), name="static")
 
-
-
-# 1) Create tables
-Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title="aak_API")
-
-
-
-# CORS (allow your React dev server)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Basic‐Auth for one admin
 security = HTTPBasic()
@@ -150,9 +143,12 @@ async def create_project_and_image(
     return proj
 
 
-# serve files in ./uploads under the /uploads URL path
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-
+uploads_path = PathLib(__file__).parent / "uploads"
+app.mount(
+    "/uploads",
+    StaticFiles(directory=str(uploads_path), html=False),
+    name="uploads",
+)
 
 
 @app.get(
@@ -231,13 +227,22 @@ def delete_project(
     db.commit()
     # implicit return None → empty 204 response
 
-if "DYNO" in os.environ:
-    DIST = Path(__file__).resolve().parent.parent / "client" / "dist"
-    if DIST.exists():
-        app.mount("/", StaticFiles(directory=str(DIST), html=True), name="static")
-        print(f"🚀 Serving SPA from {DIST}")
-    else:
-        print(f"⚠️ No build found at {DIST}")
-else:
-    print("⚠️ Dev mode: skipping SPA mount")
 
+
+# if "DYNO" in os.environ:
+#     DIST = PathLib(__file__).resolve().parent.parent / "client" / "dist"
+#     if DIST.exists():
+#         app.mount("/", StaticFiles(directory=str(DIST), html=True), name="static")
+#         print(f"🚀 Serving SPA from {DIST}")
+#     else:
+#         print(f"⚠️ No build found at {DIST}")
+# else:
+#     print("⚠️ Dev mode: skipping SPA mount")
+
+#  Serve all the files in client/dist (JS/CSS/assets) at `/`
+app.mount("/", StaticFiles(directory=str(DIST), html=True), name="spa")
+
+# 4b) Catch-all: if no file or API route matches, serve index.html
+@app.get("/{full_path:path}", include_in_schema=False)
+async def spa_catch_all(full_path: str):
+    return FileResponse(DIST / "index.html")
