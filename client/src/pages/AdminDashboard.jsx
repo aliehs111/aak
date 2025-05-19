@@ -11,7 +11,7 @@ export default function AdminDashboard({ auth }) {
   // load current projects
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/projects`, { auth })
+      .get(`${import.meta.env.VITE_API_URL}/api/projects`, { auth })
       .then(res => setProjects(res.data))
       .catch(console.error);
   }, []);
@@ -30,7 +30,7 @@ export default function AdminDashboard({ auth }) {
       if (file) form.append("file", file);
 
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/projects`,
+        `${import.meta.env.VITE_API_URL}/api/projects`,
         form,
         {
           auth,
@@ -100,7 +100,7 @@ export default function AdminDashboard({ auth }) {
   onClick={async () => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_API_URL}/projects/${p.id}`,
+        `${import.meta.env.VITE_API_URL}/api/projects/${p.id}`,
         {
           auth,               // { username, password }
           withCredentials: true
