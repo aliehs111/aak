@@ -33,7 +33,7 @@ export default function App() {
     const password = window.prompt("Admin password:");
     if (!password) return;
     try {
-      await axios.get(`${import.meta.env.VITE_API_URL}/admin`, {
+      await axios.get(`${import.meta.env.VITE_API_URL}/ping-auth`, {
         auth: { username, password },
       });
       const creds = { username, password };
@@ -41,10 +41,12 @@ export default function App() {
       setAuth(creds);
       setIsAdmin(true);
       navigate("/admin");
-    } catch {
+    } catch (error) {
+      console.error("Login error:", error);
       alert("Invalid credentials");
     }
   };
+  
 
   const handleLogout = () => {
     localStorage.removeItem("aak_admin");

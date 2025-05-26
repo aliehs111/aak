@@ -1,30 +1,63 @@
 from dotenv import load_dotenv
 load_dotenv()
+
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 import boto3, secrets, uuid
 from pathlib import Path as PathLib
-from fastapi import FastAPI, Depends, HTTPException, status, Path, UploadFile, File, Form, Request
+
+from fastapi import (
+    FastAPI, Depends, HTTPException, status, Path,
+    UploadFile, File, Form, Request
+)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import FileResponse
+
 from sqlalchemy.orm import Session
+
 import schemas
 from schemas import ProjectRead, ProjectCreate, ProjectUpdate
-from config import engine, SessionLocal, Base
-import models
 
-Base.metadata.create_all(bind=engine)
+from .database import engine, SessionLocal, Base  # Replaces old config.py
+from . import models  # Ensures models register with Base
+
+
 
 app = FastAPI(title="aak_API")
+
+@app.on_event("startup")
+def create_tables_and_seed_admin():
+    Base.metadata.create_all(bind=engine)
+
+    db = SessionLocal()
+    try:
+        existing = db.query(models.User).filter_by(id=1).first()
+        if not existing:
+            admin = models.User(
+                name="Admin User",
+                email="admin@example.com",
+                password_hash="placeholder",
+                role="architect"
+            )
+            db.add(admin)
+            db.commit()
+            print("✅ Auto-seeded admin user into MySQL.")
+    finally:
+        db.close()
+
+
 
 @app.middleware("http")
 async def spa_middleware(request: Request, call_next):
     path = request.url.path
     print(f"Middleware processing path: {path}")
-    if path.startswith(("/api/projects", "/admin", "/uploads", "/assets")):
+    if any(path.startswith(p) for p in ["/api", "/admin", "/uploads", "/assets", "/ping-auth"]):
+
+
         return await call_next(request)
     dist = PathLib(__file__).resolve().parent.parent / "client" / "dist"
     if not path.startswith("/assets") and not PathLib(dist / path).is_file():
@@ -34,11 +67,14 @@ async def spa_middleware(request: Request, call_next):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://aak-9981efe13834.herokuapp.com",
-        "http://localhost:5173",
-        "http://localhost:5506"
-    ],
+ allow_origins=[
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:5173",
+    "http://localhost:5506",
+    "https://aak-9981efe13834.herokuapp.com"
+],
+
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,8 +82,14 @@ app.add_middleware(
 
 security = HTTPBasic()
 def get_admin(credentials: HTTPBasicCredentials = Depends(security)):
-    user = os.getenv("ADMIN_USERNAME", "")
-    pw = os.getenv("ADMIN_PASSWORD", "")
+    user = os.getenv("ADMIN_USERNAME")
+    pw = os.getenv("ADMIN_PASSWORD")
+
+    print("DEBUG ENV USER:", user)
+    print("DEBUG ENV PASS:", pw)
+    print("DEBUG INPUT USER:", credentials.username)
+    print("DEBUG INPUT PASS:", credentials.password)
+
     if not (secrets.compare_digest(credentials.username, user)
             and secrets.compare_digest(credentials.password, pw)):
         raise HTTPException(
@@ -140,6 +182,14 @@ def delete_project(project_id: int = Path(..., gt=0), db: Session = Depends(get_
     db.commit()
     print(f"Deleted project: {project_id}")
 
+@app.get("/ping-auth", dependencies=[Depends(get_admin)])
+def ping_auth():
+    print("✅ /ping-auth hit")
+    return {"message": "auth passed"}
+
+
+
+
 DIST = PathLib(__file__).resolve().parent.parent / "client" / "dist"
 print(f"Static mount path: {DIST}")
 
@@ -153,9 +203,4 @@ else:
     app.mount("/", StaticFiles(directory=str(DIST), html=True), name="static")
     print("⚠️ Development mode: static mount enabled")
 
-@app.get("/{full_path:path}", include_in_schema=False)
-async def spa_catch_all(full_path: str):
-    print(f"Catch-all triggered for path: {full_path}")
-    if full_path.startswith(("api/projects", "admin", "uploads", "assets")):
-        raise HTTPException(status_code=404, detail="Not found")
-    return FileResponse(DIST / "index.html")
+

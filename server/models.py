@@ -3,7 +3,7 @@ from sqlalchemy import (
     ForeignKey, TIMESTAMP, Enum, func
 )
 from sqlalchemy.orm import relationship
-from config import Base
+from server.database import Base
 import enum
 
 
