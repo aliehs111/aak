@@ -31,23 +31,28 @@ app = FastAPI(title="aak_API")
 
 @app.on_event("startup")
 def create_tables_and_seed_admin():
-    Base.metadata.create_all(bind=engine)
-
-    db = SessionLocal()
+    print("🔥 [Startup] Running create_tables_and_seed_admin()")
     try:
+        Base.metadata.create_all(bind=engine)
+        db = SessionLocal()
+        print("📦 [Startup] Connected to DB")
         existing = db.query(models.User).filter_by(id=1).first()
+        print(f"🔍 [Startup] Admin user exists: {bool(existing)}")
         if not existing:
             admin = models.User(
                 name="Admin User",
                 email="admin@example.com",
                 password_hash="placeholder",
-                role="architect"
+                role="architect"  # <- double check this matches the enum!
             )
             db.add(admin)
             db.commit()
-            print("✅ Auto-seeded admin user into MySQL.")
+            print("✅ [Startup] Admin user inserted.")
+    except Exception as e:
+        print("❌ [Startup] Exception during DB seed:", e)
     finally:
         db.close()
+
 
 
 
