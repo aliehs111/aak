@@ -9,33 +9,34 @@ export default function Navbar({ isAdmin, onLogout }) {
 
   const baseLinkClasses = ({ isActive }) =>
     isActive
-      ? "text-amber-300"
-      : "text-primary hover:text-primary transition-colors";
+      ? "text-secondary underline underline-offset-4"
+      : "text-[#eae9e6] hover:text-[#8ebea5] hover:drop-shadow-sm transition-all duration-150";
 
   return (
-    <nav className="flex items-center justify-between p-4 bg-accent relative z-10">
+    <nav className="flex items-center justify-between p-4 bg-gradient-to-br from-[#27382e] via-[#1e2d24] to-[#27382e] backdrop-blur-md border-b border-white/10 relative z-10">
       {/* Logo + Title */}
       <NavLink to="/" className="flex items-center space-x-3 group">
         <img src={logo512} alt="Logo" className="h-16 w-16" />
         <div className="relative">
           <h1
             className="
-              text-3xl 
-              font-extrabold 
-              tracking-wide 
-              bg-clip-text 
-              text-transparent 
-              bg-gradient-to-r from-stone-300 to-amber-200 
-              transition-colors 
-              group-hover:from-lime-600 
-              group-hover:to-amber-300
-            "
+    text-3xl sm:text-4xl 
+    font-bold 
+    tracking-tight 
+    bg-gradient-to-r from-[#ccd8d3] via-[#e4e6e3] to-[#9fb7a9] 
+    bg-clip-text text-transparent 
+    drop-shadow-sm 
+    group-hover:from-[#b7cfc2] group-hover:to-[#e4e6e3] 
+    transition-all duration-500
+  "
           >
             Aaron Kirchhoff
           </h1>
-          <p className="mt-1 text-sm uppercase font-light text-amber-200">
+
+          <p className="mt-1 text-sm font-medium text-zinc-300 tracking-wide">
             Architect
           </p>
+
           <span
             className="
               absolute 
@@ -161,4 +162,3 @@ export default function Navbar({ isAdmin, onLogout }) {
     </nav>
   );
 }
-

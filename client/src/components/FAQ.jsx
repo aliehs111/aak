@@ -1,28 +1,33 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline'
-
 const faqs = [
   {
-    question: "What are your qualifications?",
+    question: "Where is Aaron licensed to practice architecture?",
     answer:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
-  },
-{
-    question: "Do you provide interior design services?",
-    answer:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+      "Aaron is a registered architect in the state of New York and has experience working on projects across the U.S. and internationally.",
   },
   {
-    question: "Do you charge for the first consultation?",
+    question: "What types of projects does Aaron specialize in?",
     answer:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+      "He works on both residential and commercial projects, including custom homes, mixed-use developments, and interior renovations.",
   },
   {
-    question: "How long does it take to produce design documents ready for builder",
+    question: "How does Aaron approach client collaboration?",
     answer:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas cupiditate laboriosam fugiat.",
+      "Aaron is consultative and collaborative. He listens carefully to his clients’ needs but isn’t afraid to offer his own ideas and design rationale to spark thoughtful dialogue.",
   },
-]
+  {
+    question: "Is Aaron experienced with sustainable or energy-efficient design?",
+    answer:
+      "Yes. Aaron continuously educates himself on sustainable practices and global design innovations, and he integrates these ideas into his work where appropriate.",
+  },
+  {
+    question: "Where is Aaron currently based?",
+    answer:
+      "He currently runs his own architecture practice in Rochester, NY.",
+  },
+];
+
 
 export default function Example() {
   return (

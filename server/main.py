@@ -153,9 +153,15 @@ def admin_health():
 
 @app.get("/api/projects", response_model=list[ProjectRead], tags=["projects"])
 def list_projects(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    projects = db.query(models.Project).offset(skip).limit(limit).all()
-    print(f"API /api/projects returned: {len(projects)} projects")
+    projects = (
+        db.query(models.Project)
+        .order_by(models.Project.created_at.desc())  # 👈 newest first
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
     return projects
+
 
 @app.get("/api/projects/{project_id}", response_model=ProjectRead, tags=["projects"])
 def get_project(project_id: int, db: Session = Depends(get_db)):

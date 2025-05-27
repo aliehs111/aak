@@ -25,9 +25,9 @@
    2) CSS Variables for your color scheme
 ───────────────────────────────────────────── */
 :root {
-  --color-primary:  #fbfcf1;
-  --color-secondary: #1F2839; 
-  --color-accent:  #3d3f46; 
+  --color-primary:  #d4d2cf;
+  --color-secondary: #8ebea5; 
+  --color-accent:  #27382e; 
 }
 
 /* ─────────────────────────────────────────────
@@ -133,4 +133,27 @@ button {
 .animation-delay-\[100ms\] { animation-delay: 100ms; }
 .animation-delay-\[200ms\] { animation-delay: 200ms; }
 /* …add as many steps as you need… */
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.4);
+  }
+}
+
+.twinkle-star {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='50,0 60,40 100,50 60,60 50,100 40,60 0,50 40,40'/%3E%3C/svg%3E");
+  background-size: cover;
+  opacity: 0;
+  animation: twinkle 3s infinite ease-in-out;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+}
+
 

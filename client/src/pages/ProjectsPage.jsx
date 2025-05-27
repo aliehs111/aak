@@ -87,46 +87,45 @@ export default function ProjectsPage({ auth }) {
   }
 
   return (
-    <div className="bg-secondary py-12 sm:py-24">
-      <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-        <p className="max-w-lg text-2xl font-semibold tracking-tight text-primary sm:text-5xl text-justify-left">
-          Inspiration
-        </p>
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:mt-16 lg:grid-cols-6 lg:grid-rows-2">
+    <div className="bg-primary py-12 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 className="text-4xl font-bold text-primary mb-10">Inspiration</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 auto-rows-[320px] gap-6">
           {projects.length === 0 ? (
             <p className="text-primary">No projects available</p>
           ) : (
             projects.map((proj, idx) => {
-              const span = COL_SPANS[idx] || "lg:col-span-2";
+              const span = COL_SPANS[idx % COL_SPANS.length] || "lg:col-span-2";
+  
               return (
                 <div
                   key={proj.id}
-                  className={`flex p-px ${span} opacity-0 animate-floatIn`}
-                  style={{ animationDelay: `${idx * 600}ms` }}
+                  className={`relative rounded-2xl overflow-hidden bg-gray-800 shadow-md ring-1 ring-white/10 transition-all duration-300 ease-in-out hover:shadow-lg ${span} opacity-0 animate-floatIn`}
+                  style={{ animationDelay: `${idx * 200}ms` }}
                 >
-                  <div className="flex flex-col overflow-hidden rounded-lg bg-gray-800 ring-1 ring-white/15">
-                    {proj.imageUrl && (
-                      <img
-                        src={proj.imageUrl}
-                        alt={proj.title}
-                        className="h-80 w-full object-cover"
-                      />
-                    )}
-                    <div className="flex-grow p-10 flex flex-col">
-                      <h3 className="text-sm/4 font-semibold text-gray-400">
+                  {proj.imageUrl && (
+                    <img
+                      src={proj.imageUrl}
+                      alt={proj.title}
+                      className="absolute inset-0 w-full h-full object-cover object-[center_30%] opacity-60"
+                    />
+                  )}
+                  <div className="relative z-10 flex flex-col justify-between h-full p-6">
+                    <div>
+                      <h3 className="text-white text-xl font-semibold mb-2">
                         {proj.title}
                       </h3>
-                      <p className="mt-2 text-lg font-medium tracking-tight text-white line-clamp-3">
+                      <p className="text-sm text-gray-200 line-clamp-3">
                         {proj.description}
                       </p>
-                      <div className="mt-auto">
-                        <Link
-                          to={`/projects/${proj.id}`}
-                          className="inline-block mt-4 text-indigo-300 hover:underline font-medium"
-                        >
-                          Read more →
-                        </Link>
-                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <Link
+                        to={`/projects/${proj.id}`}
+                        className="inline-block text-indigo-300 hover:text-indigo-200 text-sm font-medium"
+                      >
+                        Read more →
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -138,9 +137,3 @@ export default function ProjectsPage({ auth }) {
     </div>
   );
 }
-
-
-
-
-
-
