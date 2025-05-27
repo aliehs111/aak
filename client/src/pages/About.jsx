@@ -1,4 +1,4 @@
-import aaronsnow from "../assets/aaronsnow.jpg";
+
 import stamp from "../assets/stamp.jpg";
 import FAQ from "../components/FAQ";
 import aarontrain from "../assets/aarontrain.jpeg";
